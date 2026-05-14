@@ -1,25 +1,48 @@
-# liquid-shader
+﻿# fluid-2dWEbGL2
 
-## Getting Started
+Pieza interactiva construida con Next.js y WebGL2 que presenta una simulación 2D de fluidos con render de metal líquido oscuro.
 
-First, run the development server:
+## Qué incluye
+
+- simulación de fluidos 2D en tiempo real
+- render GPU con shaders en WebGL2
+- modo visual final y vistas técnicas de depuración
+- controles interactivos para ajustar el comportamiento del fluido
+- diseño one-view con enfoque editorial
+
+## Desarrollo local
+
+Instalar dependencias:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+Levantar el entorno de desarrollo:
+
+```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrí [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts útiles
 
-## Learn More
+```bash
+pnpm dev
+pnpm test
+pnpm build
+```
 
-To learn more, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- Radix UI / shadcn
+- Vitest
 
+## Estado
+
+Proyecto orientado a showcase técnico y visual, con foco en simulación de fluidos, shaders y dirección de arte interactiva.

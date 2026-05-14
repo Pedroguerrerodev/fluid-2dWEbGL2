@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef } from "react"
 import type { FluidSettings, FluidSupportState } from "@/components/fluid-lab.types"
@@ -11,7 +11,7 @@ import { DEFAULT_FLUID_SETTINGS } from "@/lib/fluid-defaults"
  * A real-time 2D fluid simulation (Stable Fluids style) rendered as
  * an iridescent oil surface. The pointer is "the stick": dragging it
  * splats velocity + dye into the field, with force scaling
- * quadratically against pointer speed — fast moves carve deep,
+ * quadratically against pointer speed â€” fast moves carve deep,
  * slow moves whisper.
  *
  *  Pipeline per frame:
@@ -156,7 +156,7 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       vec2 a = u_prev;  a.x *= u_aspect;
       vec2 b = u_point; b.x *= u_aspect;
       float d = mix(length(p - b), sdSeg(p, a, b), u_segment);
-      // Soft falloff — gaussian-ish.
+      // Soft falloff â€” gaussian-ish.
       float s = exp(-d * d / max(u_radius, 1e-5));
       vec4 base = texture(u_target, v_uv);
       o = base + s * u_color;
@@ -330,7 +330,7 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
 
     // Thin-film interference approximation.
     // Maps an optical path length (in nanometers) to an RGB color
-    // by integrating against rough CIE-ish primaries — close enough
+    // by integrating against rough CIE-ish primaries â€” close enough
     // for a soap-bubble look.
     vec3 thinFilm(float opd) {
       // Each channel is a cosine peaked at a wavelength, squared for
@@ -413,11 +413,11 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       float F = fresnel(NdotV, 0.012);
 
       // Thin-film: optical path depends on local "thickness" (dye) and
-      // viewing angle (Fresnel cos). No baseline thickness — flat oil
+      // viewing angle (Fresnel cos). No baseline thickness â€” flat oil
       // stays jet black, only disturbed regions shimmer.
       float thickness = 1800.0 * hC;
       thickness += 12.0 * vnoise(uv * 6.0 + u_time * 0.05) * hC;
-      // The angle modulates effective path length — classic thin-film.
+      // The angle modulates effective path length â€” classic thin-film.
       float opd = thickness * (2.0 * NdotV);
       vec3 iri = thinFilm(opd);
       // Iridescence only blooms where dye exists.
@@ -482,7 +482,7 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       gl!.shaderSource(sh, src)
       gl!.compileShader(sh)
       if (!gl!.getShaderParameter(sh, gl!.COMPILE_STATUS)) {
-        console.error("[v0] shader compile error:", gl!.getShaderInfoLog(sh), src)
+        console.error("[fluid-lab] shader compile error:", gl!.getShaderInfoLog(sh), src)
       }
       return sh
     }
@@ -496,7 +496,7 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       gl!.bindAttribLocation(p, 0, "a_pos")
       gl!.linkProgram(p)
       if (!gl!.getProgramParameter(p, gl!.LINK_STATUS)) {
-        console.error("[v0] program link error:", gl!.getProgramInfoLog(p))
+        console.error("[fluid-lab] program link error:", gl!.getProgramInfoLog(p))
       }
       // Cache uniform locations.
       const uniforms: Record<string, WebGLUniformLocation | null> = {}
@@ -806,7 +806,7 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       const baseR = 0.00026
       const radius = baseR * active.splatRadius * (1.0 + Math.min(s * 18.0, 3.5))
 
-      // Velocity splat — segment avoids gaps on fast moves.
+      // Velocity splat â€” segment avoids gaps on fast moves.
       splat(
         velocity,
         pointer.x,
@@ -1048,3 +1048,4 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
     />
   )
 }
+
