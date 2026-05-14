@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 
@@ -22,7 +22,6 @@ export function FluidLab() {
             <span className="fluid-hero__brand">pedroguerrerodev</span>
             <span className="fluid-hero__brand fluid-hero__brand--suffix">.es</span>
           </h1>
-          <p className="fluid-hero__copy">Donde el código se disuelve y la materia recuerda el movimiento.</p>
           <p className="fluid-hero__techline">WebGL2 · simulación de fluidos · shaders en tiempo real</p>
           <p className="fluid-hero__hint">Desliza o usa el cursor para interactuar</p>
           {supportState === "limited" ? (

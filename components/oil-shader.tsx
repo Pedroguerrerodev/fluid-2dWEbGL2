@@ -131,6 +131,97 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       o = vec4(color, 1.0);
     }`
 
+    const foamFrag = /* glsl */ `#version 300 es
+    precision highp float;
+    in vec2 v_uv;
+    uniform sampler2D u_dye;
+    uniform sampler2D u_velocity;
+    uniform vec2 u_dyeTexel;
+    uniform float u_time;
+    out vec4 fragColor;
+
+    float hash21(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
+    }
+
+    void main() {
+      vec2 e = u_dyeTexel;
+      float h = clamp(texture(u_dye, v_uv).a, 0.0, 1.5);
+      float hL = clamp(texture(u_dye, v_uv - vec2(e.x, 0.0)).a, 0.0, 1.5);
+      float hR = clamp(texture(u_dye, v_uv + vec2(e.x, 0.0)).a, 0.0, 1.5);
+      float hT = clamp(texture(u_dye, v_uv + vec2(0.0, e.y)).a, 0.0, 1.5);
+      float hB = clamp(texture(u_dye, v_uv - vec2(0.0, e.y)).a, 0.0, 1.5);
+      vec2 grad = vec2(hR - hL, hT - hB);
+      vec2 vel = texture(u_velocity, v_uv).xy;
+      float speed = length(vel);
+      float turbulence = length(grad) * 18.0 + speed * 0.18;
+      float body = smoothstep(0.06, 0.22, h);
+      float crest = smoothstep(0.32, 0.92, turbulence);
+      float froth = smoothstep(0.48, 1.28, body * 0.7 + crest * 0.95);
+      float reveal = smoothstep(0.08, 0.24, h + crest * 0.12 + speed * 0.01);
+      float bubbles = smoothstep(0.58, 0.95, sin(v_uv.x * 38.0 + u_time * 2.6 + h * 17.0) * 0.5 + 0.5);
+      float spray = clamp(froth * 0.88 + bubbles * crest * 0.52, 0.0, 1.0);
+      vec3 abyss = vec3(0.0002, 0.0005, 0.0009);
+      vec3 sea = vec3(0.020, 0.150, 0.230);
+      vec3 cyan = vec3(0.130, 0.520, 0.660);
+      vec3 whitecap = vec3(0.960, 0.990, 1.000);
+      vec3 color = mix(abyss, sea, smoothstep(0.02, 0.18, h));
+      color = mix(color, cyan, smoothstep(0.18, 0.55, body + crest * 0.35));
+      color = mix(color, whitecap, spray);
+      color *= reveal;
+      color += froth * 0.16 * reveal;
+      color += (hash21(gl_FragCoord.xy + u_time * 3.1) - 0.5) * 0.030 * reveal;
+      fragColor = vec4(color, 1.0);
+    }`;
+
+    const lavaFrag = /* glsl */ `#version 300 es
+    precision highp float;
+    in vec2 v_uv;
+    uniform sampler2D u_dye;
+    uniform sampler2D u_velocity;
+    uniform vec2 u_dyeTexel;
+    uniform float u_time;
+    out vec4 fragColor;
+
+    float hash21(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
+    }
+
+    void main() {
+      vec2 e = u_dyeTexel;
+      float h = clamp(texture(u_dye, v_uv).a, 0.0, 1.5);
+      float hL = clamp(texture(u_dye, v_uv - vec2(e.x, 0.0)).a, 0.0, 1.5);
+      float hR = clamp(texture(u_dye, v_uv + vec2(e.x, 0.0)).a, 0.0, 1.5);
+      float hT = clamp(texture(u_dye, v_uv + vec2(0.0, e.y)).a, 0.0, 1.5);
+      float hB = clamp(texture(u_dye, v_uv - vec2(0.0, e.y)).a, 0.0, 1.5);
+      vec2 grad = vec2(hR - hL, hT - hB);
+      vec2 vel = texture(u_velocity, v_uv).xy;
+      float speed = length(vel);
+      float molten = smoothstep(0.04, 0.24, h + speed * 0.06);
+      float fissure = smoothstep(0.20, 0.95, length(grad) * 15.0 + h * 0.35);
+      float reveal = smoothstep(0.07, 0.22, h + speed * 0.015 + fissure * 0.08);
+      float pulse = 0.5 + 0.5 * sin(u_time * 4.2 + h * 21.0 + speed * 0.08);
+      float flare = clamp(fissure * 0.92 + molten * pulse * 0.78, 0.0, 1.0);
+      float whiteCore = smoothstep(0.72, 1.0, flare + pulse * 0.22);
+      vec3 crust = vec3(0.0002, 0.00005, 0.00002);
+      vec3 ember = vec3(0.260, 0.018, 0.000);
+      vec3 orange = vec3(0.980, 0.220, 0.010);
+      vec3 yellow = vec3(1.000, 0.780, 0.060);
+      vec3 whiteHot = vec3(1.000, 0.980, 0.860);
+      vec3 color = mix(crust, ember, molten);
+      color = mix(color, orange, smoothstep(0.28, 0.72, flare));
+      color = mix(color, yellow, smoothstep(0.56, 0.92, flare));
+      color = mix(color, whiteHot, whiteCore);
+      color *= reveal;
+      color += flare * 0.18 * reveal;
+      color += (hash21(gl_FragCoord.xy + u_time * 4.0) - 0.5) * 0.020 * reveal;
+      fragColor = vec4(color, 1.0);
+    }`
+
     const splatFrag = /* glsl */ `#version 300 es
     precision highp float;
     in vec2 v_uv;
@@ -527,6 +618,8 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       copy: program(baseVert, copyFrag),
       clear: program(baseVert, clearFrag),
       debugDye: program(baseVert, debugDyeFrag),
+      foam: program(baseVert, foamFrag),
+      lava: program(baseVert, lavaFrag),
       splat: program(baseVert, splatFrag),
       advect: program(baseVert, advectFrag),
       divergence: program(baseVert, divergenceFrag),
@@ -679,6 +772,17 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
       gl!.useProgram(p)
       gl!.uniform2f(u["u_texel"]!, source.texelX, source.texelY)
       gl!.uniform1i(u["u_tex"]!, source.attach(0))
+      blit(null)
+    }
+
+    function drawStylizedModeToScreen(mode: "lava") {
+      const target = progs.lava
+      const { p, u } = target
+      gl!.useProgram(p)
+      gl!.uniform1i(u["u_dye"]!, dye.read.attach(0))
+      gl!.uniform1i(u["u_velocity"]!, velocity.read.attach(1))
+      gl!.uniform2f(u["u_dyeTexel"]!, dye.texelX, dye.texelY)
+      gl!.uniform1f(u["u_time"]!, (performance.now() - startTime) / 1000)
       blit(null)
     }
 
@@ -984,12 +1088,8 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
 
     function render() {
       const active = settingsRef.current
-      if (active.viewMode === "velocity") {
-        drawTextureToScreen(velocity.read)
-        return
-      }
-      if (active.viewMode === "pressure") {
-        drawTextureToScreen(pressure.read)
+      if (active.viewMode === "lava") {
+        drawStylizedModeToScreen("lava")
         return
       }
       if (active.viewMode === "dye") {
@@ -1048,4 +1148,7 @@ export default function OilShader({ settings = DEFAULT_FLUID_SETTINGS, onSupport
     />
   )
 }
+
+
+
 

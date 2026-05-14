@@ -1,4 +1,4 @@
-export type FluidViewMode = "final" | "velocity" | "pressure" | "dye"
+﻿export type FluidViewMode = "final" | "lava" | "dye"
 
 export type FluidSupportState = "full" | "limited"
 

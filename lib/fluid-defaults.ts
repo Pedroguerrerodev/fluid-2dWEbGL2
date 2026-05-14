@@ -1,4 +1,4 @@
-import type { FluidCapability, FluidSettings, FluidViewMode } from "@/components/fluid-lab.types"
+﻿import type { FluidCapability, FluidSettings, FluidViewMode } from "@/components/fluid-lab.types"
 
 export const DEFAULT_FLUID_SETTINGS: FluidSettings = {
   viscosity: 0.6,
@@ -10,10 +10,9 @@ export const DEFAULT_FLUID_SETTINGS: FluidSettings = {
 }
 
 export const FLUID_VIEW_OPTIONS: Array<{ value: FluidViewMode; label: string }> = [
-  { value: "final", label: "Final" },
-  { value: "velocity", label: "Velocidad" },
-  { value: "pressure", label: "Presión" },
-  { value: "dye", label: "Dye" },
+  { value: "final", label: "Fluido" },
+  { value: "lava", label: "Lava" },
+  { value: "dye", label: "Humo" },
 ]
 
 export const FLUID_CAPABILITIES: FluidCapability[] = [
@@ -23,7 +22,7 @@ export const FLUID_CAPABILITIES: FluidCapability[] = [
   },
   {
     title: "Pipeline de shaders en WebGL2",
-    description: "Render final GPU con modos de depuración para inspeccionar capas internas.",
+    description: "Render final GPU con modos visuales alternativos para inspeccionar distintas lecturas del fluido.",
   },
   {
     title: "Control visual explicable",

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+﻿import { describe, expect, it } from "vitest"
 
 import { DEFAULT_FLUID_SETTINGS, FLUID_VIEW_OPTIONS } from "@/lib/fluid-defaults"
 import { formatFluidValue, getFluidViewLabel } from "@/lib/fluid-format"
@@ -15,9 +15,10 @@ describe("fluid lab metadata", () => {
     expect(formatFluidValue("inputForce", 1.4)).toBe("140%")
   })
 
-  it("maps debug view identifiers to Spanish labels", () => {
-    expect(FLUID_VIEW_OPTIONS).toHaveLength(4)
-    expect(getFluidViewLabel("pressure")).toBe("Presión")
-    expect(getFluidViewLabel("dye")).toBe("Dye")
+  it("maps visual mode identifiers to visible labels", () => {
+    expect(FLUID_VIEW_OPTIONS).toHaveLength(3)
+    expect(getFluidViewLabel("final")).toBe("Fluido")
+    expect(getFluidViewLabel("lava")).toBe("Lava")
+    expect(getFluidViewLabel("dye")).toBe("Humo")
   })
 })
